@@ -1,8 +1,5 @@
 package multistylerpc.discord.style;
 import java.util.ArrayList;
-
-import com.jagrosh.discordipc.IPCClient;
-
 import multistylerpc.App;
 import multistylerpc.discord.style.styles.DefaultStyle;
 public class StyleManager {

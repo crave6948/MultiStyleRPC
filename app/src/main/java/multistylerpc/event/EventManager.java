@@ -1,5 +1,6 @@
 package multistylerpc.event;
  
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,8 +21,7 @@ public class EventManager {
                 if (!method.isAccessible()) {
                     method.setAccessible(true);
                 }
-
-                Class<? extends Event> eventClass = (Class<? extends Event>) method.getParameterTypes()[0];
+                Class<? extends Event> eventClass = getEventClass(method);
                 EventTarget eventTarget = method.getAnnotation(EventTarget.class);
 
                 List<EventHook> invokableEventTargets = registry.getOrDefault(eventClass, new ArrayList<>());
@@ -30,6 +30,19 @@ public class EventManager {
             }
         }
     }
+    private Class<? extends Event> getEventClass(Method method) {
+    try {
+        Class<?>[] parameterTypes = method.getParameterTypes();
+        if (parameterTypes.length == 1 && Event.class.isAssignableFrom(parameterTypes[0])) {
+            @SuppressWarnings("unchecked")
+            Class<? extends Event> eventClass = (Class<? extends Event>) parameterTypes[0];
+            return eventClass;
+        }
+    } catch (ClassCastException e) {
+        e.printStackTrace();
+    }
+    return null;
+}
 
     /**
      * Unregister listener
