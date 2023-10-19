@@ -5,7 +5,12 @@ import com.jagrosh.discordipc.IPCListener;
 import com.jagrosh.discordipc.entities.pipe.PipeStatus;
 import com.jagrosh.discordipc.exceptions.NoDiscordClientException;
 
+import multistylerpc.App;
 import multistylerpc.discord.style.StyleManager;
+import multistylerpc.event.events.IDEvent;
+import multistylerpc.event.events.ReadyEvent;
+import multistylerpc.event.events.RepeatEvent;
+import multistylerpc.event.events.UpdateEvent;
 
 public class DiscordClient {
     public IPCClient client = null;
@@ -28,7 +33,9 @@ public class DiscordClient {
         }
     }
     public void newclient() throws NullPointerException {
-        client = new IPCClient(mStyleManager.getSelectedID());
+        IDEvent eIdEvent = new IDEvent(-1);
+        App.eventManager.callEvent(eIdEvent);
+        client = new IPCClient(eIdEvent.getId());
     }
     public void connect() {
         if (client == null)  return;
@@ -47,7 +54,7 @@ public class DiscordClient {
         client.setListener(new IPCListener() {
             @Override
             public void onReady(IPCClient client) {
-                mStyleManager.onReady(client);
+                App.eventManager.callEvent(new ReadyEvent(client));
             }
         });
     }
@@ -57,8 +64,11 @@ public class DiscordClient {
             public void run() {
                 try {
                     while (!isClosing) {
-                        mStyleManager.onUpdate(client);
-                        sleep(mStyleManager.nextSleepTime());
+                        App.eventManager.callEvent(new UpdateEvent(client));
+                        RepeatEvent repeatEvent = new RepeatEvent(5000L);
+                        App.eventManager.callEvent(repeatEvent);
+                        if (repeatEvent.isCancelled()) break;
+                        sleep(repeatEvent.getRepeatEvery());
                     }
                 }catch (Exception e) {
                     e.printStackTrace();

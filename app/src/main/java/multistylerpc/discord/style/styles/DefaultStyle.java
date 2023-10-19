@@ -5,13 +5,24 @@ import com.jagrosh.discordipc.IPCClient;
 import com.jagrosh.discordipc.entities.RichPresence;
 import multistylerpc.discord.style.StyleInfo;
 import multistylerpc.discord.style.StyleModule;
+import multistylerpc.event.EventTarget;
+import multistylerpc.event.events.IDEvent;
+import multistylerpc.event.events.ReadyEvent;
+import multistylerpc.event.events.RepeatEvent;
+import multistylerpc.event.events.UpdateEvent;
 
-@StyleInfo(name ="Default", clientID = 1161336492774412399L) 
+@StyleInfo(name ="Default") 
 public class DefaultStyle extends StyleModule{
     private int count = 0;
-    private long RepeatEvery = 5000L;
-    @Override
-    public void onReady(IPCClient client) {
+    private long RepeatEvery = 10000L;
+
+    @EventTarget
+    public void onClient(IDEvent event) {
+        event.setId(1161336492774412399L);
+    }
+    @EventTarget
+    public void onReady(ReadyEvent event) {
+        IPCClient client = event.getClient();
         RichPresence.Builder builder = new RichPresence.Builder();
         builder.setState("West of House")
                 // .setDetails("Frustration level: Over 9000")
@@ -22,8 +33,9 @@ public class DefaultStyle extends StyleModule{
         client.sendRichPresence(presence);
     }
 
-    @Override
-    public void onUpdate(IPCClient client) {
+    @EventTarget
+    public void onUpdate(UpdateEvent event) {
+        IPCClient client = event.getClient();
         count++;
         RichPresence.Builder builder = new RichPresence.Builder();
         builder.setState("count -> " + count)
@@ -34,9 +46,9 @@ public class DefaultStyle extends StyleModule{
         client.sendRichPresence(presence);
     }
 
-    @Override
-    public long nextSleep() {
-        return RepeatEvery;
+    @EventTarget
+    public void nextSleep(RepeatEvent event) {
+        event.setRepeatEvery(RepeatEvery);
     }
     
 }
