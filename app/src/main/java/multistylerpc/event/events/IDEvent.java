@@ -3,7 +3,7 @@ package multistylerpc.event.events;
 import multistylerpc.event.Event;
 
 public class IDEvent extends Event {
-    public long id;
+    private long id;
     public IDEvent(long id) {
         this.id = id;
     }

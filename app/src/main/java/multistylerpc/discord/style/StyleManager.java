@@ -3,6 +3,7 @@ import java.util.ArrayList;
 
 import com.jagrosh.discordipc.IPCClient;
 
+import multistylerpc.App;
 import multistylerpc.discord.style.styles.DefaultStyle;
 public class StyleManager {
     private ArrayList<StyleModule> styleModules = new ArrayList<StyleModule>();
@@ -12,22 +13,14 @@ public class StyleManager {
         styleModules.add(defaultStyle);
         setStyle(defaultStyle);
     };
-    public long getSelectedID() throws NullPointerException{
-        return selectedStyleModule.getClientID();
-    }
-    public void onReady(IPCClient client) throws NullPointerException {
-        selectedStyleModule.onReady(client);
-    }
-    public void onUpdate(IPCClient client) throws NullPointerException{
-        selectedStyleModule.onUpdate(client);
-    }
     public void setStyle(int index) {
+        if (selectedStyleModule != null) App.eventManager.unregisterListener(selectedStyleModule);
         selectedStyleModule = styleModules.get(index);
+        App.eventManager.registerListener(selectedStyleModule);
     }
     public void setStyle(StyleModule style) {
+        if (selectedStyleModule != null) App.eventManager.unregisterListener(selectedStyleModule);
         selectedStyleModule = style;
-    }
-    public long nextSleepTime() throws NullPointerException {
-        return selectedStyleModule.nextSleep();
+        App.eventManager.registerListener(style);
     }
 }
