@@ -5,7 +5,6 @@ import com.jagrosh.discordipc.IPCClient;
 import com.jagrosh.discordipc.entities.RichPresence;
 import multistylerpc.discord.style.StyleInfo;
 import multistylerpc.discord.style.StyleModule;
-import multistylerpc.discord.value.Value;
 import multistylerpc.discord.value.values.IntegerValue;
 import multistylerpc.discord.value.values.LongValue;
 import multistylerpc.discord.value.values.TextValue;
