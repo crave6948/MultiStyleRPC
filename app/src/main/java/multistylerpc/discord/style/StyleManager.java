@@ -4,7 +4,7 @@ import multistylerpc.App;
 import multistylerpc.discord.style.styles.DefaultStyle;
 public class StyleManager {
     private ArrayList<StyleModule> styleModules = new ArrayList<StyleModule>();
-    private StyleModule selectedStyleModule = null;
+    public StyleModule selectedStyleModule = null;
     private DefaultStyle defaultStyle = new DefaultStyle();
     public StyleManager() {
         styleModules.add(defaultStyle);

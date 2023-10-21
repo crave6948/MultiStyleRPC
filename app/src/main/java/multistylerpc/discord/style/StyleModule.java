@@ -1,6 +1,12 @@
 package multistylerpc.discord.style;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+
+import multistylerpc.App;
+import multistylerpc.discord.value.Value;
 import multistylerpc.event.Listenable;
 
 public class StyleModule implements Listenable {
@@ -25,9 +31,35 @@ public class StyleModule implements Listenable {
             System.out.println("CustomAnnotation not found on "+this.getClass().getName());
         }
     }
+    public List<Value<?>> getValues() {
+        List<Value<?>> result = new ArrayList<>();
+        Field[] declaredFields = getClass().getDeclaredFields();
 
+        for (Field valueField : declaredFields) {
+            valueField.setAccessible(true);
+            try {
+                Object fieldValue = valueField.get(this);
+                if (fieldValue instanceof Value<?>) {
+                    result.add((Value<?>) fieldValue);
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace(); // Handle the exception according to your application's logic
+            }
+        }
+
+        return result;
+    }
+    public Value<?> getValue(String valueName) {
+        for (Value<?> value : getValues()) {
+            if (value.getName().equalsIgnoreCase(valueName)) {
+                return value;
+            }
+        }
+        return null;
+    }
     @Override
     public boolean handleEvents() {
-        return true;
+        if (App.cDiscordClient.mStyleManager.selectedStyleModule == null) return false;
+        return App.cDiscordClient.mStyleManager.selectedStyleModule.styleName.equals(this.styleName);
     };
 }
