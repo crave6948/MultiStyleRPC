@@ -1,6 +1,7 @@
 package multistylerpc.discord.style.styles;
 
 import java.time.OffsetDateTime;
+
 import com.jagrosh.discordipc.IPCClient;
 import com.jagrosh.discordipc.entities.RichPresence;
 import multistylerpc.discord.style.StyleInfo;

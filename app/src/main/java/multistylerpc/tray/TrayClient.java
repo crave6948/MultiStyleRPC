@@ -11,7 +11,9 @@ import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 
 import multistylerpc.App;
+import multistylerpc.tray.menu.TrayMenuManager;
 public class TrayClient {
+    public TrayMenuManager mTrayMenuManager = new TrayMenuManager();
     public void createTray() {
         System.out.println("Creating tray...");
         // Check if the SystemTray is supported on this platform
@@ -19,12 +21,13 @@ public class TrayClient {
             // Get the SystemTray instance
             SystemTray tray = SystemTray.getSystemTray();
             ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource("Nady.jpeg"));
-            // Load an image for your icon (replace "icon.png" with your image file)
-            // Image image = Toolkit.getDefaultToolkit().getImage("Nady.jpeg");
             Image image = icon.getImage();
-
             // Create a popup menu for the system tray icon
             PopupMenu popupMenu = new PopupMenu();
+            if (App.cDiscordClient.mStyleManager.selectedStyleModule != null) {
+                mTrayMenuManager.createMenu(App.cDiscordClient.mStyleManager.selectedStyleModule);
+                mTrayMenuManager.allMenus().forEach(it -> {popupMenu.add(it);});
+            }
             MenuItem exitItem = new MenuItem("Exit");
             exitItem.addActionListener(new ActionListener() {
                 @Override
@@ -33,6 +36,7 @@ public class TrayClient {
                     System.exit(0);
                 }
             });
+            popupMenu.addSeparator();
             popupMenu.add(exitItem);
 
             // Create a tray icon with your image and popup menu

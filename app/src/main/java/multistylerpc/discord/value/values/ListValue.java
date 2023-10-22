@@ -1,19 +1,19 @@
 package multistylerpc.discord.value.values;
 
-import java.util.Arrays;
+import java.util.List;
 
 import org.json.JSONObject;
 
 import multistylerpc.discord.value.Value;
 
 public class ListValue extends Value<String>{
-    private final String[] list;
-    public ListValue(String name, String value,String[] list) {
+    public final List<String> list;
+    public ListValue(String name, String value,List<String> list) {
         super(name, value);
         this.list = list;
     }
     public boolean contains(String string) {
-        return Arrays.stream(list).anyMatch(it -> it.equalsIgnoreCase(string));
+        return list.stream().anyMatch(it -> it.equalsIgnoreCase(string));
     }
     @Override
     public void changeValue(String value) {
