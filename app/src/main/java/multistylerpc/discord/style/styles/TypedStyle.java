@@ -40,25 +40,20 @@ public class TypedStyle extends StyleModule{
 
     @EventTarget
     public void onUpdate(UpdateEvent event) {
-        if (up) {
-            currentPercent += 10;
-        }else {
-            currentPercent -= 10;
-        }
+        currentPercent += up ? 10 : -10;
         if (currentPercent >= 100) {
             up = false;
-        }else if (currentPercent <= 0) {
+        } else if (currentPercent <= 0) {
             up = true;
         }
         IPCClient client = event.getClient();
         RichPresence.Builder builder = new RichPresence.Builder();
-        int stateindex = Math.round((currentPercent/100f)*stateValue.get().length());
-        int detailsindex = Math.round((currentPercent/100f)*detailsValue.get().length());
-        System.out.println(currentPercent + " || "+stateindex + " " + detailsindex);
-        builder.setState(insert(stateValue.get(),stateindex))
-                .setDetails(insert(detailsValue.get(),detailsindex))
-                .setStartTimestamp(time)
-                .setLargeImage("cat", "Style - "+this.styleName);
+        int stateindex = Math.round((currentPercent / 100f) * stateValue.get().length());
+        int detailsindex = Math.round((currentPercent / 100f) * detailsValue.get().length());
+        builder.setState(insert(stateValue.get(), stateindex))
+               .setDetails(insert(detailsValue.get(), detailsindex))
+               .setStartTimestamp(time)
+               .setLargeImage("cat", "Style - " + this.styleName);
         RichPresence presence = builder.build();
         client.sendRichPresence(presence);
     }
