@@ -1,6 +1,6 @@
 package multistylerpc.discord.value;
 
-import org.json.JSONObject;
+import com.google.gson.JsonElement;
 
 public abstract class Value<T> {
     public final String name;
@@ -27,8 +27,8 @@ public abstract class Value<T> {
         }
     }
 
-    public abstract JSONObject toJson();
-    public abstract void fromJson(JSONObject element);
+    public abstract JsonElement toJson();
+    public abstract void fromJson(JsonElement element);
     
     public void changeValue(T value) {
         this.value = value;

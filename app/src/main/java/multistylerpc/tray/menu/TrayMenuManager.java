@@ -17,11 +17,20 @@ import multistylerpc.discord.value.values.IntegerValue;
 import multistylerpc.discord.value.values.ListValue;
 import multistylerpc.discord.value.values.LongValue;
 import multistylerpc.discord.value.values.TextValue;
+import multistylerpc.tray.gui.ValueChangeGui;
 
 public class TrayMenuManager {
     private ArrayList<MenuItem> menus = new ArrayList<>();
     public ArrayList<MenuItem> allMenus() {
         return menus;
+    }
+    public void createValueGui(Value<?> value) {
+        new Thread() {
+            @Override
+            public void run() {
+                new ValueChangeGui().intialize(value);
+            };
+        }.start();
     }
     public void createMenu(StyleModule module) {
         menus.clear();
@@ -45,6 +54,7 @@ public class TrayMenuManager {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         System.out.println(String.format("Call new Gui + %s", integerValue.name));
+                        createValueGui(integerValue);
                     }
                 });
                 menus.add(mItem);
@@ -55,6 +65,7 @@ public class TrayMenuManager {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         System.out.println(String.format("Call new Gui + %s", floatValue.name));
+                        createValueGui(floatValue);
                     }
                 });
                 menus.add(mItem);
@@ -65,6 +76,7 @@ public class TrayMenuManager {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         System.out.println(String.format("Call new Gui + %s", longValue.name));
+                        createValueGui(longValue);
                     }
                 });
                 menus.add(mItem);
@@ -75,6 +87,7 @@ public class TrayMenuManager {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         System.out.println(String.format("Call new Gui + %s", textValue.name));
+                        createValueGui(textValue);
                     }
                 });
                 menus.add(mItem);
@@ -83,10 +96,23 @@ public class TrayMenuManager {
                 Menu menu = new Menu(listValue.getName());
                 for (String s : listValue.list) {
                     MenuItem item = new MenuItem(s);
+                    if (listValue.value.equals(s)) {
+                        item.setLabel("-> " + s);
+                    }
                     item.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
                             listValue.set(s);
+                            for (int i = 0; i < menu.getItemCount(); i++) {
+                                MenuItem cmenu = menu.getItem(i);
+                                String label = cmenu.getLabel();
+                                if (label.startsWith("-> ")) {
+                                    cmenu.setLabel(label.substring(3));
+                                }
+                                if (cmenu.getLabel().equals(listValue.value)) {
+                                    cmenu.setLabel("-> " + s);
+                                }
+                            }
                             System.out.println(String.format("%s value has been setted to -> || %s", listValue.name, listValue.value));
                         }
                     });

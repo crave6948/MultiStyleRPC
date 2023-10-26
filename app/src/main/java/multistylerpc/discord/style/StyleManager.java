@@ -2,13 +2,16 @@ package multistylerpc.discord.style;
 import java.util.ArrayList;
 import multistylerpc.App;
 import multistylerpc.discord.style.styles.DefaultStyle;
+import multistylerpc.discord.style.styles.TypedStyle;
 public class StyleManager {
     private ArrayList<StyleModule> styleModules = new ArrayList<StyleModule>();
     public StyleModule selectedStyleModule = null;
     private DefaultStyle defaultStyle = new DefaultStyle();
+    private TypedStyle typedStyle = new TypedStyle();
     public StyleManager() {
         styleModules.add(defaultStyle);
-        setStyle(defaultStyle);
+        styleModules.add(typedStyle);
+        setStyle(typedStyle);
     };
     public void setStyle(int index) {
         if (selectedStyleModule != null) App.eventManager.unregisterListener(selectedStyleModule);

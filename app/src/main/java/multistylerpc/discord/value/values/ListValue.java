@@ -2,7 +2,8 @@ package multistylerpc.discord.value.values;
 
 import java.util.List;
 
-import org.json.JSONObject;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
 
 import multistylerpc.discord.value.Value;
 
@@ -25,21 +26,11 @@ public class ListValue extends Value<String>{
         }
     }
     @Override
-    public JSONObject toJson() {
-        return new JSONObject().put(name, value);
+    public JsonElement toJson() {
+        return new JsonPrimitive(value);
     }
     @Override
-    public void fromJson(JSONObject element) {
-        try {
-            String jValue = element.getString(name);
-            for (String string : list) {
-                if (string.equalsIgnoreCase(jValue)) {
-                    this.value = string;
-                    break;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public void fromJson(JsonElement element) {
+        if (element.isJsonPrimitive()) changeValue(element.getAsString());
     }
 }

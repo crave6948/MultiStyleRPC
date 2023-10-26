@@ -1,6 +1,7 @@
 package multistylerpc.discord.value.values;
 
-import org.json.JSONObject;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
 
 import multistylerpc.discord.value.Value;
 
@@ -20,11 +21,12 @@ public class FloatValue extends Value<Float>{
         return max;
     }
     @Override
-    public JSONObject toJson() {
-        return new JSONObject().put(name, value);
+    public JsonElement toJson() {
+        return new JsonPrimitive(value);
     }
     @Override
-    public void fromJson(JSONObject element) {
-        this.value = element.getFloat(name);
+    public void fromJson(JsonElement element) {
+        if (element.isJsonPrimitive())
+            this.value = element.getAsFloat();
     }
 }
