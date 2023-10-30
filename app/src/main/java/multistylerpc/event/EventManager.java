@@ -31,18 +31,18 @@ public class EventManager {
         }
     }
     private Class<? extends Event> getEventClass(Method method) {
-    try {
-        Class<?>[] parameterTypes = method.getParameterTypes();
-        if (parameterTypes.length == 1 && Event.class.isAssignableFrom(parameterTypes[0])) {
-            @SuppressWarnings("unchecked")
-            Class<? extends Event> eventClass = (Class<? extends Event>) parameterTypes[0];
-            return eventClass;
+        try {
+            Class<?>[] parameterTypes = method.getParameterTypes();
+            if (parameterTypes.length == 1 && Event.class.isAssignableFrom(parameterTypes[0])) {
+                @SuppressWarnings("unchecked")
+                Class<? extends Event> eventClass = (Class<? extends Event>) parameterTypes[0];
+                return eventClass;
+            }
+        } catch (ClassCastException e) {
+            e.printStackTrace();
         }
-    } catch (ClassCastException e) {
-        e.printStackTrace();
+        return null;
     }
-    return null;
-}
 
     /**
      * Unregister listener

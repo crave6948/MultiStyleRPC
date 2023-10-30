@@ -1,5 +1,8 @@
 package multistylerpc.discord;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jagrosh.discordipc.IPCClient;
 import com.jagrosh.discordipc.IPCListener;
 import com.jagrosh.discordipc.entities.pipe.PipeStatus;
@@ -13,52 +16,39 @@ import multistylerpc.event.events.RepeatEvent;
 import multistylerpc.event.events.UpdateEvent;
 
 public class DiscordClient {
+    private static final Logger logger = LoggerFactory.getLogger(DiscordClient.class);
     public IPCClient client = null;
     public StyleManager mStyleManager = new StyleManager();
     private boolean isClosing = false;
     public void start() {
         isClosing = false;
         try {
-            newclient();
+            IDEvent eIdEvent = new IDEvent(-1);
+            App.eventManager.callEvent(eIdEvent);
+            client = new IPCClient(eIdEvent.getId());
             connect();
             update();
-        } catch (NullPointerException e) {
-            client.close();
-            client = null;
-            System.out.println("No Selected Style");
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             if (client.getStatus() == PipeStatus.CONNECTED) close();
             client = null;
         }
     }
-    public void newclient() throws NullPointerException {
-        IDEvent eIdEvent = new IDEvent(-1);
-        App.eventManager.callEvent(eIdEvent);
-        client = new IPCClient(eIdEvent.getId());
-    }
-    public void connect() {
+    private void connect() throws NoDiscordClientException{
         if (client == null)  return;
-        if (client.getStatus() == PipeStatus.CONNECTED) {
-            close();
-        }
-        setListener();
-        try {
-            client.connect();
-        } catch (NoDiscordClientException e) {
-            e.printStackTrace();
-            close();
-        }
-    }
-    public void setListener() {
         client.setListener(new IPCListener() {
             @Override
             public void onReady(IPCClient client) {
                 App.eventManager.callEvent(new ReadyEvent(client));
             }
         });
+        try {
+            client.connect();
+        } catch (NoDiscordClientException e) {
+            throw e;
+        }
     }
-    public void update() {
+    private void update() {
         Thread t = new Thread() {
             @Override
             public void run() {
@@ -71,7 +61,7 @@ public class DiscordClient {
                         sleep(repeatEvent.getRepeatEvery());
                     }
                 }catch (Exception e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage(), e);
                 }
                 close();
             }
