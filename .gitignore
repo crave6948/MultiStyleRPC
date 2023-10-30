@@ -3,3 +3,8 @@
 
 # Ignore Gradle build output directory
 build
+
+path.json
+app/src/test
+config.json
+settings.json
