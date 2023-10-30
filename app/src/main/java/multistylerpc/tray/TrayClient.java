@@ -10,12 +10,16 @@ import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import multistylerpc.App;
 import multistylerpc.tray.menu.TrayMenuManager;
 public class TrayClient {
+    private static final Logger logger = LoggerFactory.getLogger(TrayClient.class);
     public TrayMenuManager mTrayMenuManager = new TrayMenuManager();
     public void createTray() {
-        System.out.println("Creating tray...");
+        logger.info("Creating tray...");
         // Check if the SystemTray is supported on this platform
         if (SystemTray.isSupported()) {
             // Get the SystemTray instance
@@ -34,6 +38,7 @@ public class TrayClient {
                 public void actionPerformed(ActionEvent e) {
                     App.cDiscordClient.close();
                     System.exit(0);
+                    logger.info("Closing App by Tray Icon");
                 }
             });
             popupMenu.addSeparator();
@@ -46,12 +51,12 @@ public class TrayClient {
                 // Add the tray icon to the SystemTray
                 tray.add(trayIcon);
             } catch (AWTException e) {
-                System.err.println("TrayIcon could not be added.");
+                logger.error("TrayIcon could not be added.");
             }
         } else {
-            System.err.println("SystemTray is not supported.");
+            logger.error("SystemTray is not supported.");
             return;
         }
-        System.out.println("Finished Creating tray.");
+        logger.info("Finished Creating tray.");
     }
 }

@@ -1,5 +1,8 @@
 package multistylerpc.discord;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jagrosh.discordipc.IPCClient;
 import com.jagrosh.discordipc.IPCListener;
 import com.jagrosh.discordipc.entities.pipe.PipeStatus;
@@ -13,6 +16,7 @@ import multistylerpc.event.events.RepeatEvent;
 import multistylerpc.event.events.UpdateEvent;
 
 public class DiscordClient {
+    private static final Logger logger = LoggerFactory.getLogger(DiscordClient.class);
     public IPCClient client = null;
     public StyleManager mStyleManager = new StyleManager();
     private boolean isClosing = false;
@@ -25,7 +29,7 @@ public class DiscordClient {
             connect();
             update();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             if (client.getStatus() == PipeStatus.CONNECTED) close();
             client = null;
         }
@@ -57,7 +61,7 @@ public class DiscordClient {
                         sleep(repeatEvent.getRepeatEvery());
                     }
                 }catch (Exception e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage(), e);
                 }
                 close();
             }
